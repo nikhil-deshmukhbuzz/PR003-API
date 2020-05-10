@@ -1,0 +1,6 @@
+{
+  "ConnectionStrings": {
+    "devDbConnection": "Server=NIKHIL\\SQLEXPRESS;Database=DB002A;Trusted_Connection=True;",
+    "prodDbConnection": "Server=NIKHIL\\SQLEXPRESS;Database=DB002A;Trusted_Connection=True;"
+  }
+}

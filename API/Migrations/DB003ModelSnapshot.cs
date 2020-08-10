@@ -19,6 +19,134 @@ namespace API.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("API.Models.C_Transaction", b =>
+                {
+                    b.Property<long>("C_TransactionID")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<decimal>("Amount");
+
+                    b.Property<DateTime?>("CreatedOn");
+
+                    b.Property<string>("CustomerCode");
+
+                    b.Property<string>("Email");
+
+                    b.Property<string>("InvoiceNumber");
+
+                    b.Property<string>("MobileNo");
+
+                    b.Property<DateTime?>("ModifiedOn");
+
+                    b.Property<string>("OrderID");
+
+                    b.Property<string>("PayeeName");
+
+                    b.Property<string>("PaymentID");
+
+                    b.Property<string>("PaymentStatus");
+
+                    b.Property<string>("PaymentType");
+
+                    b.Property<string>("ProductCode");
+
+                    b.Property<string>("Signature");
+
+                    b.Property<DateTime>("TransactionDate");
+
+                    b.Property<string>("TransactionStep");
+
+                    b.Property<int?>("ValidityInMonth");
+
+                    b.HasKey("C_TransactionID");
+
+                    b.ToTable("C_Transactions");
+                });
+
+            modelBuilder.Entity("API.Models.Email", b =>
+                {
+                    b.Property<long>("EmailID")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<byte[]>("Attachement");
+
+                    b.Property<byte[]>("Attachement1");
+
+                    b.Property<string>("Attachement1Name");
+
+                    b.Property<byte[]>("Attachement2");
+
+                    b.Property<string>("Attachement2Name");
+
+                    b.Property<string>("AttachementName");
+
+                    b.Property<int>("Attempt");
+
+                    b.Property<string>("Body");
+
+                    b.Property<string>("CC");
+
+                    b.Property<DateTime>("CreatedOn");
+
+                    b.Property<string>("CustomerCode");
+
+                    b.Property<string>("ErrorMessage");
+
+                    b.Property<bool>("IsError");
+
+                    b.Property<bool>("IsSent");
+
+                    b.Property<DateTime>("ModifiedOn");
+
+                    b.Property<string>("ProductCode");
+
+                    b.Property<string>("Subject");
+
+                    b.Property<string>("To");
+
+                    b.HasKey("EmailID");
+
+                    b.ToTable("Emails");
+                });
+
+            modelBuilder.Entity("API.Models.Error", b =>
+                {
+                    b.Property<long>("ErrorID")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Code");
+
+                    b.Property<string>("Message");
+
+                    b.Property<string>("Type");
+
+                    b.HasKey("ErrorID");
+
+                    b.ToTable("Errors");
+                });
+
+            modelBuilder.Entity("API.Models.Hosted_Service_Url", b =>
+                {
+                    b.Property<long>("Hosted_Service_Url_ID")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Enviorment");
+
+                    b.Property<bool>("IsActive");
+
+                    b.Property<string>("ServiceName");
+
+                    b.Property<string>("URL");
+
+                    b.HasKey("Hosted_Service_Url_ID");
+
+                    b.ToTable("Hosted_Service_Urls");
+                });
+
             modelBuilder.Entity("API.Models.MenuMaster", b =>
                 {
                     b.Property<long>("MenuID")
@@ -61,6 +189,23 @@ namespace API.Migrations
                     b.HasIndex("ProfileID");
 
                     b.ToTable("MenuProfileLinks");
+                });
+
+            modelBuilder.Entity("API.Models.Monitor", b =>
+                {
+                    b.Property<long>("MonitorID")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("ExecutionTime");
+
+                    b.Property<string>("Message");
+
+                    b.Property<string>("ServiceName");
+
+                    b.HasKey("MonitorID");
+
+                    b.ToTable("Monitors");
                 });
 
             modelBuilder.Entity("API.Models.Month", b =>
@@ -275,7 +420,7 @@ namespace API.Migrations
 
                     b.Property<string>("SerialNumber");
 
-                    b.Property<int>("ValidityInMonth");
+                    b.Property<int>("ValidityInDays");
 
                     b.HasKey("SuscriptionID");
 
@@ -313,6 +458,8 @@ namespace API.Migrations
                     b.Property<decimal>("RentAmount");
 
                     b.Property<long>("RoomID");
+
+                    b.Property<string>("TenantNo");
 
                     b.HasKey("TenantID");
 
@@ -368,6 +515,37 @@ namespace API.Migrations
                     b.ToTable("Transactions");
                 });
 
+            modelBuilder.Entity("API.Models.TransactionError", b =>
+                {
+                    b.Property<long>("TransactionErrorID")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedOn");
+
+                    b.Property<string>("ErrorCode");
+
+                    b.Property<string>("ErrorType");
+
+                    b.Property<string>("Message");
+
+                    b.Property<DateTime>("ModifiedOn");
+
+                    b.Property<long>("PGID");
+
+                    b.Property<long?>("TenantID");
+
+                    b.Property<string>("TransactionSessionID");
+
+                    b.HasKey("TransactionErrorID");
+
+                    b.HasIndex("PGID");
+
+                    b.HasIndex("TenantID");
+
+                    b.ToTable("TransactionErrors");
+                });
+
             modelBuilder.Entity("API.Models.User", b =>
                 {
                     b.Property<long>("UserID")
@@ -375,6 +553,8 @@ namespace API.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime?>("CreatedOn");
+
+                    b.Property<string>("DeviceID");
 
                     b.Property<string>("Email");
 
@@ -393,6 +573,8 @@ namespace API.Migrations
                     b.Property<string>("Password");
 
                     b.Property<long>("ProfileMasterID");
+
+                    b.Property<string>("PushNotificationToken");
 
                     b.Property<string>("Username");
 
@@ -472,6 +654,18 @@ namespace API.Migrations
                         .WithMany()
                         .HasForeignKey("RoomID")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("API.Models.TransactionError", b =>
+                {
+                    b.HasOne("API.Models.PG", "PG")
+                        .WithMany()
+                        .HasForeignKey("PGID")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("API.Models.Tenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantID");
                 });
 
             modelBuilder.Entity("API.Models.User", b =>

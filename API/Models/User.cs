@@ -17,6 +17,8 @@ namespace API.Models
         public string MobileNo { get; set; }
         public string OTP { get; set; }
         public string Email { get; set; }
+        public string PushNotificationToken { get; set; }
+        public string DeviceID { get; set; }
         public bool IsActive { get; set; }
 
 

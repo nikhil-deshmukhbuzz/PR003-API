@@ -32,6 +32,17 @@ namespace API.Core
             return Code.ToUpper();
         }
 
+        public string GenerateTenantNumber()
+        {
+            string Code = "";
+
+            var NoOfTenant = context.Tenants.Count() + 1;
+
+            Code = "TNT-" + String.Format("{0:000000}", NoOfTenant);
+
+            return Code.ToUpper();
+        }
+
         public string GenerateInvoiceNumber()
         {
             string Code = "";

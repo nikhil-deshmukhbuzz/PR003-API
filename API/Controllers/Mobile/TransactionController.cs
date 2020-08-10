@@ -69,7 +69,7 @@ namespace API.Controllers.Mobile
 
                             if (suscription != null)
                             {
-                                DateTime lastDateOfSuscription = trans.TransactionDate.AddMonths(suscription.ValidityInMonth);
+                                DateTime lastDateOfSuscription = trans.TransactionDate.AddMonths(suscription.ValidityInDays);
                                 if (lastDateOfSuscription > DateTime.Now)
                                 {
                                     bool addTrans = addTransaction(trans);
@@ -152,7 +152,7 @@ namespace API.Controllers.Mobile
 
                 if (suscription != null && trasaction != null)
                 {
-                    DateTime lastDateOfSuscription = trasaction.TransactionDate.AddMonths(suscription.ValidityInMonth);
+                    DateTime lastDateOfSuscription = trasaction.TransactionDate.AddMonths(suscription.ValidityInDays);
                     if (lastDateOfSuscription > DateTime.Now)
                     {
 
@@ -201,7 +201,7 @@ namespace API.Controllers.Mobile
 
                     if (suscription != null)
                     {
-                        DateTime lastDateOfSuscription = transaction.TransactionDate.AddMonths(suscription.ValidityInMonth);
+                        DateTime lastDateOfSuscription = transaction.TransactionDate.AddMonths(suscription.ValidityInDays);
                         if (lastDateOfSuscription > DateTime.Now)
                             result = true;
 

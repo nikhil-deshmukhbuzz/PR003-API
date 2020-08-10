@@ -11,6 +11,7 @@ namespace API.Models
     {
         [Key]
         public long TenantID { get; set; }
+        public string TenantNo { get; set; }
         public string FullName { get; set; }
         public string MobileNo { get; set; }
         public string Email { get; set; }

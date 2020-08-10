@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using API.Contex;
+using API.Core;
 using API.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
@@ -21,52 +22,49 @@ namespace API.Controllers.Mobile
         [HttpPost]
         public IActionResult Add(Tenant tenant)
         {
+            SerialNumber serialNumber = new SerialNumber();
+
             try
             {
                 long output;
+               
                 using (var context = new DB003())
                 {
+                    tenant.TenantNo = serialNumber.GenerateTenantNumber();
+                    tenant.IsActive = true;
                     tenant.CreatedOn = DateTime.Now;
                     tenant.ModifiedOn = DateTime.Now;
 
                     context.Tenants.Add(tenant);
                     output = context.SaveChanges();
+                    
 
-
-
-                    var user_exists = context.Users
-                        .Where(w => w.MobileNo == tenant.MobileNo)
-                        .FirstOrDefault();
-
-                    if (user_exists == null)
+                    User user = new User()
                     {
-                        var profile_output = context.ProfileMasters
-                          .Where(w => w.ProfileName == "Tenant")
-                          .FirstOrDefault();
+                        Name = tenant.FullName,
+                        Username = tenant.MobileNo,
+                        Password = tenant.MobileNo,
+                        MobileNo = tenant.MobileNo,
+                        OTP = null,
+                        Email = tenant.Email,
+                        PGID = null
+                    };
 
-                        User user = new User()
-                        {
-                            Name = tenant.FullName,
-                            Username = tenant.MobileNo,
-                            Password = tenant.MobileNo,
-                            MobileNo = tenant.MobileNo,
-                            OTP = null,
-                            Email = tenant.Email,
-                            IsActive = true,
-                            PGID = null,
-                            ProfileMasterID = profile_output.ProfileID,
 
-                            CreatedOn = DateTime.Now,
-                            ModifiedOn = DateTime.Now
-                        };
+                    //Add User
+                    User_Mgmnt user_Mgmnt = new User_Mgmnt();
+                    bool user_output =user_Mgmnt.AddUser(user,"TNT");
 
-                        long user_output;
-                        using (var user_context = new DB003())
-                        {
-                            user_context.Users.Add(user);
-                            user_output = user_context.SaveChanges();
-                        }
-                    }
+  
+                    //Add current month rent to rent table
+                    var t = context.Tenants
+                            .Include(i => i.Room)
+                            .Where(w => w.PGID == tenant.PGID &&  w.TenantID == tenant.TenantID && w.IsCheckOut == false)
+                            .FirstOrDefault();
+
+                    Rent_Calculus rent_Calculus = new Rent_Calculus();
+                    rent_Calculus.ForTenant(t);
+                    
                 }
                 return Ok(output);
             }
@@ -77,6 +75,7 @@ namespace API.Controllers.Mobile
             finally
             {
                 context = null;
+                serialNumber = null;
             }
         }
 

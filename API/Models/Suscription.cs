@@ -14,7 +14,7 @@ namespace API.Models
         public string SerialNumber { get; set; }
         public string Name { get; set; }
         public double Amount { get; set; }
-        public int ValidityInMonth { get; set; }
+        public int ValidityInDays { get; set; }
         public string Description { get; set; }
         public bool IsActive { get; set; }
     }

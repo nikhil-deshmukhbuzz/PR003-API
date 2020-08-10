@@ -76,6 +76,41 @@ namespace API.Controllers.Mobile
             }
         }
 
+        [Route("Checkout")]
+        [HttpPost]
+        public IActionResult Checkout(Tenant tenant)
+        {
+            try
+            {
+                int output;
+                using (var context = new DB003())
+                {
+                    var input = context.Tenants
+                    .Where(w => w.TenantID == tenant.TenantID)
+                    .FirstOrDefault();
+
+                   if (tenant.CheckOutDate == null && input.CheckOutDate == null)
+                    {
+
+                        input.CheckOutDate = DateTime.Now;
+                    }
+
+                    input.IsCheckOut = true;
+                    input.ModifiedOn = DateTime.Now;
+                    output = context.SaveChanges();
+                }
+                return Ok(output);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            finally
+            {
+                context = null;
+            }
+        }
+
         [Route("Cancellation")]
         [HttpPost]
         public IActionResult Cancellation(Tenant tenant)

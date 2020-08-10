@@ -19,6 +19,7 @@ namespace API.Models
 
         public string Status { get; set; }
         public User User { get; set; }
+        public List<Tenant> Tenants { get; set; }
         public List<MenuMaster> ListOfMenuMaster { get; set; }
     }
 
@@ -61,6 +62,7 @@ namespace API.Models
         public long PGID { get; set; }
         public string CustomerCode { get; set; }
         public string ProductCode { get; set; }
+        public string InvoiceNumber { get; set; }
     }
     public class SuscriptionResponse
     {

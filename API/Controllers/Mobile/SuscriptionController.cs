@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using API.Contex;
+using API.Models;
+using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using API.Contex;
-using API.Models;
-using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+using API.Core;
 
 namespace API.Controllers.Mobile
 {
@@ -17,7 +16,7 @@ namespace API.Controllers.Mobile
     [ApiController]
     public class SuscriptionController : ControllerBase
     {
-        private readonly string payURL = "https://b131stolj4.execute-api.ap-south-1.amazonaws.com/Prod/";
+       
         private readonly HttpClient client = new HttpClient();
         DB003 context = new DB003();
 
@@ -91,7 +90,7 @@ namespace API.Controllers.Mobile
 
                             if (suscription != null)
                             {
-                                DateTime lastDateOfSuscription = trans.TransactionDate.AddMonths(suscription.ValidityInMonth);
+                                DateTime lastDateOfSuscription = trans.TransactionDate.AddDays(suscription.ValidityInDays);
                                 if (lastDateOfSuscription > DateTime.Now)
                                 {
                                     bool addTrans = addTransaction(trans);
@@ -183,7 +182,8 @@ namespace API.Controllers.Mobile
             else
             {
                 var trasaction = context.Transactions
-                    .Where(w => w.SuscriptionNumber == request.CustomerCode)
+                    .Where(w => w.CustomerCode == request.CustomerCode)
+                    .OrderByDescending(o => o.TransactionDate)
                     .FirstOrDefault();
 
                 if (trasaction != null)
@@ -192,7 +192,7 @@ namespace API.Controllers.Mobile
                         .Where(w => w.SerialNumber == trasaction.SuscriptionNumber)
                         .FirstOrDefault();
 
-                    lastDateOfSuscription = trasaction.TransactionDate.AddMonths(suscription.ValidityInMonth);
+                    lastDateOfSuscription = trasaction.TransactionDate.AddDays(suscription.ValidityInDays);
                     if (lastDateOfSuscription > DateTime.Now)
                     {
                         suscriptionResponse = new SuscriptionResponse()
@@ -232,6 +232,60 @@ namespace API.Controllers.Mobile
             return Ok(suscriptionResponse);
         }
 
+        [Route("AddTransaction")]
+        [HttpPost]
+        public async Task<IActionResult> AddTransaction(SuscriptionRequest request)
+        {
+            try
+            {
+                var lastTrans = await GetLastTransaction(request);
+                bool output = addTransaction(lastTrans);
+
+                return Ok(output);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            finally
+            {
+                context = null;
+            }
+        }
+
+        [Route("TransactionErrorLog")]
+        [HttpPost]
+        public IActionResult TransactionErrorLog(TransactionError transactionError)
+        {
+            try
+            {
+                var error = context.Errors
+                    .Where(w => w.Code == transactionError.ErrorCode)
+                    .FirstOrDefault();
+
+                transactionError.ErrorType = error.Type;
+                transactionError.Message = error.Message;
+                transactionError.CreatedOn = DateTime.Now;
+                transactionError.ModifiedOn = DateTime.Now;
+
+                using (var context = new DB003())
+                {
+                    context.TransactionErrors.Add(transactionError);
+                    var output = context.SaveChanges();
+                }
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+            finally
+            {
+                context = null;
+            }
+        }
+
         private bool IsSuscriptionValid(string customerCode)
         {
 
@@ -251,7 +305,7 @@ namespace API.Controllers.Mobile
 
                     if (suscription != null)
                     {
-                        DateTime lastDateOfSuscription = transaction.TransactionDate.AddMonths(suscription.ValidityInMonth);
+                        DateTime lastDateOfSuscription = transaction.TransactionDate.AddDays(suscription.ValidityInDays);
                         if (lastDateOfSuscription > DateTime.Now)
                             result = true;
 
@@ -295,11 +349,27 @@ namespace API.Controllers.Mobile
 
         private async Task<Transaction> GetLastTransaction(SuscriptionRequest request)
         {
-            client.DefaultRequestHeaders.Accept.Clear();
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            Transaction output = null;
+            try
+            {
+                Host host = new Host();
+                string payURL = host.GetHostedURL("Pay");
+                host = null;
 
-            var response = await client.PostAsJsonAsync(payURL + "api/Payment/GetLatestTransaction", request);
-            var output = await response.Content.ReadAsAsync<Transaction>();
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                var response = await client.PostAsJsonAsync(payURL + "api/Payment/GetLatestTransaction", request);
+                 output = await response.Content.ReadAsAsync<Transaction>();
+            }
+            catch(Exception ex)
+            {
+                output = null;
+            }
+            finally
+            {
+
+            }
             return output;
         }
     }

@@ -12,7 +12,7 @@
     "framework"     : "netcoreapp2.1",
     "s3-prefix"     : "API/",
     "template"      : "serverless.template",
-    "template-parameters" : "\"ShouldCreateBucket\"=\"true\";\"BucketName\"=\"\"",
-    "s3-bucket"           : "pr003-api",
+    "template-parameters" : "\"ShouldCreateBucket\"=\"false\";\"BucketName\"=\"u-pr003\"",
+    "s3-bucket"           : "u-pr003",
     "stack-name"          : "pr003"
 }

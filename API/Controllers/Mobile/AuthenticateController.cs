@@ -49,6 +49,17 @@ namespace API.Controllers.Mobile
                     }
                     else
                     {
+                        var tenants = new List<Tenant>();
+                        if (user.ProfileMaster.ProfileName == "Tenant")
+                        {
+                            tenants = context.Tenants
+                                   .Include(i => i.Room)
+                                   .Include(i => i.PG)
+                                   .Where(u => u.MobileNo == user.MobileNo)
+                                   .ToList();
+                        }
+
+                        userManagement.Tenants = tenants;
                         userManagement.Status = "success";
                     }
 
@@ -116,6 +127,18 @@ namespace API.Controllers.Mobile
                     }
                     else
                     {
+                        var tenants = new List<Tenant>();
+                        if (user.ProfileMaster.ProfileName == "Tenant")
+                        {
+                            tenants = context.Tenants
+                                   .Include(i => i.PG)
+                                   .Include(i => i.Room)
+                                   .Where(u => u.MobileNo == user.MobileNo)
+                                   .OrderByDescending( o => o.CreatedOn)
+                                   .ToList();
+                        }
+
+                        userManagement.Tenants = tenants;
                         userManagement.Status = "success";
                     }
 
@@ -139,7 +162,7 @@ namespace API.Controllers.Mobile
                 }
                 else
                 {
-                    userManagement.Status = "wrong otp";
+                    userManagement.Status = "user_not_exists";
                 }
 
 
@@ -161,8 +184,6 @@ namespace API.Controllers.Mobile
             {
                 var user = context.Users
                    .Where(u => u.MobileNo.Trim() == oUser.MobileNo.Trim())
-                   .Include(i => i.PG)
-                   .Include(i => i.ProfileMaster)
                    .FirstOrDefault();
 
                 if (user != null)
@@ -220,7 +241,7 @@ namespace API.Controllers.Mobile
                         .Where(w => w.SerialNumber == trasaction.SuscriptionNumber)
                         .FirstOrDefault();
 
-                    lastDateOfSuscription = trasaction.TransactionDate.AddMonths(suscription.ValidityInMonth);
+                    lastDateOfSuscription = trasaction.TransactionDate.AddDays(suscription.ValidityInDays);
                     if (lastDateOfSuscription > DateTime.Now)
                     {
                         suscriptionResponse = new SuscriptionResponse()

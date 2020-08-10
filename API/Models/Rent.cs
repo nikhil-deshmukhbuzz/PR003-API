@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -29,6 +30,9 @@ namespace API.Models
 
         public long MonthID { get; set; }
         public Month Month { get; set; }
+
+        [NotMapped]
+        public string MonthName { get; set; }
 
         public DateTime? CreatedOn { get; set; }
         public long? CreatedBy { get; set; }

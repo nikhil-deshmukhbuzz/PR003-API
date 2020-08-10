@@ -8,6 +8,9 @@ namespace API.Contex
 {
     public class DB003 : DbContext
     {
+        private string env = "P";
+        
+
         public IConfiguration Configuration { get; }
 
         public DB003()
@@ -34,12 +37,29 @@ namespace API.Contex
         public DbSet<Rent> Rents { get; set; }
         public DbSet<Suscription> Suscriptions { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
-
+        public DbSet<Error> Errors { get; set; }
+        public DbSet<TransactionError> TransactionErrors { get; set; }
+        public DbSet<Hosted_Service_Url> Hosted_Service_Urls { get; set; }
+        public DbSet<Email> Emails { get; set; }
+        public DbSet<Monitor> Monitors { get; set; }
+        public DbSet<C_Transaction> C_Transactions { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-           // string con = "Server=twittinest.c3gce2a7fa8f.ap-south-1.rds.amazonaws.com;Database=uat_DB003;User Id=admin; Password=buzz#2008;";//GetConnectionString();
-            string con = "Server=NIKHIL\\SQLEXPRESS;Database=DB003;Trusted_Connection=True;";//GetConnectionString();
+            string con = "";
+            if (env == "P")
+            {
+                con = "Server=database-1.cuace85fwem4.ap-south-1.rds.amazonaws.com;Database=uat_DB003;User Id=admin; Password=buzz#2008;";
+            }
+            else if(env == "U")
+            {
+                con = "Server=database-1.cuace85fwem4.ap-south-1.rds.amazonaws.com;Database=uat_DB003;User Id=admin; Password=buzz#2008;";
+            }
+            else
+            {
+                con = "Server=NIKHIL\\SQLEXPRESS;Database=DB003;Trusted_Connection=True;";
+            }
+         
             optionsBuilder.UseSqlServer(con);
         }
 

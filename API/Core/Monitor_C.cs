@@ -18,7 +18,7 @@ namespace API.Core
                     var monitor = new Monitor()
                     {
                         ServiceName = sericeName,
-                        ExecutionTime = TimeZone.CurrentDateTime,
+                        ExecutionTime = TimeZone.GetCurrentDateTime(),
                         Message = message
                     };
                     context.Monitors.Add(monitor);

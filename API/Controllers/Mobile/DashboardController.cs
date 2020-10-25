@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using API.Contex;
+using API.Core;
 using API.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
@@ -112,7 +113,41 @@ namespace API.Controllers.Mobile
             }
             catch (Exception ex)
             {
-                throw;
+                Exception_C.Add(System.Reflection.MethodBase.GetCurrentMethod().Name, ex.Message);
+                return StatusCode(500);
+            }
+            finally
+            {
+                context = null;
+            }
+        }
+
+        [Route("Admin")]
+        [HttpGet]
+        public IActionResult Admin()
+        {
+            try
+            {
+                AdminDashboard output = new AdminDashboard();
+
+                var pgs = context.PGs
+                    .ToList();
+                
+
+                output.NoOfPGOwner = pgs.Count;
+                output.NoOfActive = pgs.Where(w => w.IsActive == true).ToList().Count;
+                output.NoOfInActive = pgs.Where(w => w.IsActive == false).ToList().Count;
+
+                output.PGs = pgs;
+                output.ActivePGs = pgs.Where(w => w.IsActive == true).ToList();
+                output.InActivePGs = pgs.Where(w => w.IsActive == false).ToList();
+
+                return Ok(output);
+            }
+            catch (Exception ex)
+            {
+                Exception_C.Add(System.Reflection.MethodBase.GetCurrentMethod().Name, ex.Message);
+                return StatusCode(500);
             }
             finally
             {

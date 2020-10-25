@@ -108,7 +108,8 @@ namespace API.Controllers.Mobile
             }
             catch (Exception ex)
             {
-                throw;
+                Exception_C.Add(System.Reflection.MethodBase.GetCurrentMethod().Name, ex.Message);
+                return StatusCode(500);
             }
             finally
             {
@@ -131,7 +132,8 @@ namespace API.Controllers.Mobile
             }
             catch (Exception ex)
             {
-                throw;
+                Exception_C.Add(System.Reflection.MethodBase.GetCurrentMethod().Name, ex.Message);
+                return StatusCode(500);
             }
             finally
             {
@@ -153,7 +155,8 @@ namespace API.Controllers.Mobile
             }
             catch (Exception ex)
             {
-                throw;
+                Exception_C.Add(System.Reflection.MethodBase.GetCurrentMethod().Name, ex.Message);
+                return StatusCode(500);
             }
             finally
             {

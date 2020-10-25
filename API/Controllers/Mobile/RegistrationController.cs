@@ -36,11 +36,12 @@ namespace API.Controllers.Mobile
                     context.Registrations.Add(registration);
                     output = context.SaveChanges();
                 }
-                return Ok(output);
+                return Ok(registration.RegistrationID);
             }
             catch (Exception ex)
             {
-                throw;
+                Exception_C.Add(System.Reflection.MethodBase.GetCurrentMethod().Name, ex.Message);
+                return StatusCode(500);
             }
         }
 
@@ -50,23 +51,29 @@ namespace API.Controllers.Mobile
         {
             try
             {
-                bool output = false;
+                long output = 0;
 
                 var registration = context.Registrations
                     .Where(w => w.MobileNo == mobileNo)
                     .FirstOrDefault();
 
+                var users = context.Users
+                    .Where(w => w.MobileNo == mobileNo)
+                    .FirstOrDefault();
 
-                if (registration == null)
-                    output = true;
+                if (users != null)
+                    throw new Exception("No registration. User already exists");
+                else if (registration == null)
+                    output = 0;
                 else
-                    output = false;
+                    output = registration.RegistrationID;
 
                 return Ok(output);
             }
             catch (Exception ex)
             {
-                throw;
+                Exception_C.Add(System.Reflection.MethodBase.GetCurrentMethod().Name, ex.Message);
+                return StatusCode(500);
             }
             finally
             {

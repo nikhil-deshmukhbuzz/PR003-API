@@ -2,9 +2,7 @@
 using API.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace API.Core
 {
@@ -21,9 +19,16 @@ namespace API.Core
                     .Where(w => w.IsActive == true)
                     .ToList();
 
+                PushNotification_C pushNotification_C = new PushNotification_C();
                 foreach (var item in output)
                 {
                     calculateRentPGID(item.PGID);
+
+                    /* Add Push Notification
+                */
+                    string title = "Mez";
+                    string body =  TimeZone.GetCurrentDateTime().ToString("MMMM") + "-" + TimeZone.GetCurrentDateTime().Year + " rent details added";
+                    pushNotification_C.AddPushNotificationPG(item.PGID, title, body);
                 }
 
             }
@@ -78,6 +83,7 @@ namespace API.Core
                    .Where(w => w.IsActive == true && w.IsCheckOut == false && w.PGID == pgId)
                    .ToList();
 
+            PushNotification_C pushNotification_c = new PushNotification_C(); ;
             foreach (var item in output)
             {
                 calculateRentTenantID(item);
@@ -86,8 +92,8 @@ namespace API.Core
 
         private void calculateRentTenantID(Tenant tenant)
         {
-            long month = DateTime.Now.Month;
-            int year = DateTime.Now.Year;
+            long month = TimeZone.GetCurrentDateTime().Month;
+            int year = TimeZone.GetCurrentDateTime().Year;
 
             var output = context.Rents
                .Where(w => w.Year == year && w.MonthID == month && w.TenantID == tenant.TenantID && w.PGID == tenant.PGID)
@@ -118,12 +124,12 @@ namespace API.Core
                     PGID = tenant.PGID,
                     TenantID = tenant.TenantID,
                     PaymentStatusID = Convert.ToInt64(Status.Unpaid),
-                    MonthID = DateTime.Now.Month,
-                    Year = DateTime.Now.Year,
+                    MonthID = TimeZone.GetCurrentDateTime().Month,
+                    Year = TimeZone.GetCurrentDateTime().Year,
                     CreatedBy = null,
-                    CreatedOn = DateTime.Now,
+                    CreatedOn = TimeZone.GetCurrentDateTime(),
                     ModifiedBy = null,
-                    ModifiedOn = DateTime.Now
+                    ModifiedOn = TimeZone.GetCurrentDateTime()
                 };
 
                 using (var context = new DB003())

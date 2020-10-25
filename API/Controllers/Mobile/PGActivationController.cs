@@ -32,7 +32,8 @@ namespace API.Controllers.Mobile
             }
             catch (Exception ex)
             {
-                throw;
+                Exception_C.Add(System.Reflection.MethodBase.GetCurrentMethod().Name, ex.Message);
+                return StatusCode(500);
             }
             finally
             {
@@ -44,9 +45,10 @@ namespace API.Controllers.Mobile
         [HttpPost]
         public IActionResult Activation(Registration registration)
         {
+            bool output = false;
             try
             {
-                var output = context.Registrations
+                var register = context.Registrations
                     .Where(w => w.RegistrationID == registration.RegistrationID)
                     .FirstOrDefault();
 
@@ -55,12 +57,12 @@ namespace API.Controllers.Mobile
                 PG pg = new PG()
                 {
                     PGNo = serialNumber.GeneratePGNumber(),
-                    Name = output.PGName,
-                    OwnerName = output.FullName,
-                    MobileNo = output.MobileNo,
-                    Email = output.Email,
-                    Address = output.Address,
-                    City = output.City,
+                    Name = register.PGName,
+                    OwnerName = register.FullName,
+                    MobileNo = register.MobileNo,
+                    Email = register.Email,
+                    Address = register.Address,
+                    City = register.City,
                     IsActive = true,
 
                     CreatedOn = DateTime.Now,
@@ -101,17 +103,20 @@ namespace API.Controllers.Mobile
                 //Add User
                 User_Mgmnt user_Mgmnt = new User_Mgmnt();
                 bool user_output = user_Mgmnt.AddUser(user, "PG");
-
-                return Ok(output);
+                output = true;
+                
             }
             catch (Exception ex)
             {
-                throw;
+                output = false;
+                Exception_C.Add(System.Reflection.MethodBase.GetCurrentMethod().Name, ex.Message);
+                return StatusCode(500);
             }
             finally
             {
                 context = null;
             }
+            return Ok(output);
         }
     }
 }

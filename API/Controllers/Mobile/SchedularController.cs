@@ -24,6 +24,8 @@ namespace API.Controllers.Mobile
         DB003 context = null;
         string Email_Url = null;
 
+
+
         [Route("SendEmailToPG")]
         [HttpGet]
         public async Task<IActionResult> SendEmailToPG()
@@ -167,14 +169,16 @@ namespace API.Controllers.Mobile
 
 
         [Route("RentCalculation")]
-        [HttpGet]
+        [HttpPost]
         public IActionResult RentCalculation()
         {
+            bool bResult = false;
             Rent_Calculus rent_calculus = new Rent_Calculus();
             try
             {
                 Monitor_C.Add("Monthly_RentCalculation", "");
                 rent_calculus.ForAllPG();
+                bResult = true;
 
             }
             catch (Exception ex)
@@ -186,8 +190,32 @@ namespace API.Controllers.Mobile
             {
                 rent_calculus = null;
             }
+            return Ok(bResult);
+        }
+
+        [Route("SendNotification")]
+        [HttpGet]
+        public IActionResult SendNotification()
+        {
+            PushNotification_C push = new PushNotification_C();
+            try
+            {
+                Monitor_C.Add("SendNotification", "");
+                push.Send();
+
+            }
+            catch (Exception ex)
+            {
+                Monitor_C.Add("SendNotification", "Exception : " + ex.Message);
+
+            }
+            finally
+            {
+                push = null;
+            }
             return Ok(true);
         }
+
 
         private async Task<bool> SendEmail(Email request)
         {

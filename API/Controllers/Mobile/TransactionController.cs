@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 using Microsoft.AspNetCore.Cors;
 using API.Contex;
+using API.Core;
 
 namespace API.Controllers.Mobile
 {
@@ -126,7 +127,8 @@ namespace API.Controllers.Mobile
             }
             catch (Exception ex)
             {
-                throw;
+                Exception_C.Add(System.Reflection.MethodBase.GetCurrentMethod().Name, ex.Message);
+                return StatusCode(500);
             }
             finally
             {
@@ -210,7 +212,8 @@ namespace API.Controllers.Mobile
             }
             catch (Exception ex)
             {
-                throw ex;
+                Exception_C.Add(System.Reflection.MethodBase.GetCurrentMethod().Name, ex.Message);
+                return false;
             }
             finally
             {
@@ -234,7 +237,8 @@ namespace API.Controllers.Mobile
             }
             catch (Exception ex)
             {
-                throw ex;
+                Exception_C.Add(System.Reflection.MethodBase.GetCurrentMethod().Name, ex.Message);
+                return false;
             }
             finally
             {

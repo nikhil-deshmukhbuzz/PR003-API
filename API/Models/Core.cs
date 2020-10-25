@@ -35,6 +35,19 @@ namespace API.Models
         public List<OnNotice> OnNotice { get; set; }
     }
 
+    public class AdminDashboard
+    {
+        public int NoOfPGOwner { get; set; }
+        public int NoOfActive { get; set; }
+        public int NoOfInActive { get; set; }
+        public int NoOfIssue { get; set; }
+
+        public List<PG> PGs { get; set; }
+        public List<PG> ActivePGs { get; set; }
+        public List<PG> InActivePGs { get; set; }
+ 
+    }
+
 
     public class BedAvailable
     {

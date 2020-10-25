@@ -64,6 +64,64 @@ namespace API.Migrations
                     b.ToTable("C_Transactions");
                 });
 
+            modelBuilder.Entity("API.Models.Configuration", b =>
+                {
+                    b.Property<long>("ConfigurationID")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Code");
+
+                    b.Property<string>("Email");
+
+                    b.Property<bool>("IsActive");
+
+                    b.Property<string>("MobileNo");
+
+                    b.Property<string>("Name");
+
+                    b.Property<string>("Password");
+
+                    b.Property<int?>("Port");
+
+                    b.Property<string>("PushNotify_Sender_Key");
+
+                    b.Property<string>("PushNotify_Server_Key");
+
+                    b.Property<string>("PushNotify_Title");
+
+                    b.Property<string>("SmtpServer");
+
+                    b.HasKey("ConfigurationID");
+
+                    b.ToTable("Configurations");
+                });
+
+            modelBuilder.Entity("API.Models.Configuration_SMS", b =>
+                {
+                    b.Property<long>("Configuration_SMSID")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("APIKey");
+
+                    b.Property<bool>("IsActive");
+
+                    b.Property<string>("Password");
+
+                    b.Property<string>("Sender");
+
+                    b.Property<string>("URL");
+
+                    b.Property<string>("Username");
+
+                    b.Property<string>("Vendor_Name");
+
+                    b.HasKey("Configuration_SMSID");
+
+                    b.ToTable("Configuration_SMSs");
+                });
+
             modelBuilder.Entity("API.Models.Email", b =>
                 {
                     b.Property<long>("EmailID")
@@ -126,6 +184,23 @@ namespace API.Migrations
                     b.HasKey("ErrorID");
 
                     b.ToTable("Errors");
+                });
+
+            modelBuilder.Entity("API.Models.ExceptionText", b =>
+                {
+                    b.Property<long>("ExceptionTextID")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedOn");
+
+                    b.Property<string>("FunctionName");
+
+                    b.Property<string>("Message");
+
+                    b.HasKey("ExceptionTextID");
+
+                    b.ToTable("ExceptionTexts");
                 });
 
             modelBuilder.Entity("API.Models.Hosted_Service_Url", b =>
@@ -276,6 +351,47 @@ namespace API.Migrations
                     b.HasKey("ProfileID");
 
                     b.ToTable("ProfileMasters");
+                });
+
+            modelBuilder.Entity("API.Models.PushNotification", b =>
+                {
+                    b.Property<long>("PushNotificationID")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Body");
+
+                    b.Property<DateTime>("CreatedOn");
+
+                    b.Property<string>("DeviceID");
+
+                    b.Property<DateTime?>("ExpiryDate");
+
+                    b.Property<string>("MobileNo");
+
+                    b.Property<DateTime>("ModifiedOn");
+
+                    b.Property<string>("Name");
+
+                    b.Property<long?>("PGID");
+
+                    b.Property<bool>("Push");
+
+                    b.Property<long?>("TenantID");
+
+                    b.Property<string>("Titile");
+
+                    b.Property<string>("Token");
+
+                    b.Property<bool>("Visible");
+
+                    b.HasKey("PushNotificationID");
+
+                    b.HasIndex("PGID");
+
+                    b.HasIndex("TenantID");
+
+                    b.ToTable("PushNotifications");
                 });
 
             modelBuilder.Entity("API.Models.Registration", b =>
@@ -598,6 +714,17 @@ namespace API.Migrations
                         .WithMany()
                         .HasForeignKey("ProfileID")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("API.Models.PushNotification", b =>
+                {
+                    b.HasOne("API.Models.PG", "PG")
+                        .WithMany()
+                        .HasForeignKey("PGID");
+
+                    b.HasOne("API.Models.Tenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantID");
                 });
 
             modelBuilder.Entity("API.Models.Rent", b =>

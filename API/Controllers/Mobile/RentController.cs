@@ -36,7 +36,8 @@ namespace API.Controllers.Mobile
             }
             catch (Exception ex)
             {
-                throw;
+                Exception_C.Add(System.Reflection.MethodBase.GetCurrentMethod().Name, ex.Message);
+                return StatusCode(500);
             }
             finally
             {
@@ -68,7 +69,8 @@ namespace API.Controllers.Mobile
             }
             catch (Exception ex)
             {
-                throw;
+                Exception_C.Add(System.Reflection.MethodBase.GetCurrentMethod().Name, ex.Message);
+                return StatusCode(500);
             }
             finally
             {
@@ -91,7 +93,8 @@ namespace API.Controllers.Mobile
             }
             catch (Exception ex)
             {
-                throw;
+                Exception_C.Add(System.Reflection.MethodBase.GetCurrentMethod().Name, ex.Message);
+                return StatusCode(500);
             }
             finally
             {
@@ -112,7 +115,8 @@ namespace API.Controllers.Mobile
             }
             catch (Exception ex)
             {
-                throw;
+                Exception_C.Add(System.Reflection.MethodBase.GetCurrentMethod().Name, ex.Message);
+                return StatusCode(500);
             }
             finally
             {
@@ -140,7 +144,8 @@ namespace API.Controllers.Mobile
             }
             catch (Exception ex)
             {
-                throw;
+                Exception_C.Add(System.Reflection.MethodBase.GetCurrentMethod().Name, ex.Message);
+                return StatusCode(500);
             }
             finally
             {
@@ -161,7 +166,8 @@ namespace API.Controllers.Mobile
             }
             catch (Exception ex)
             {
-                throw;
+                Exception_C.Add(System.Reflection.MethodBase.GetCurrentMethod().Name, ex.Message);
+                return StatusCode(500);
             }
             finally
             {
@@ -181,7 +187,8 @@ namespace API.Controllers.Mobile
             }
             catch (Exception ex)
             {
-                throw;
+                Exception_C.Add(System.Reflection.MethodBase.GetCurrentMethod().Name, ex.Message);
+                return StatusCode(500);
             }
             finally
             {
@@ -238,6 +245,7 @@ namespace API.Controllers.Mobile
             }
             catch (Exception ex)
             {
+                Exception_C.Add(System.Reflection.MethodBase.GetCurrentMethod().Name, ex.Message);
                 result = false;
             }
             finally
@@ -262,7 +270,8 @@ namespace API.Controllers.Mobile
             }
             catch (Exception ex)
             {
-                throw;
+                Exception_C.Add(System.Reflection.MethodBase.GetCurrentMethod().Name, ex.Message);
+                return StatusCode(500);
             }
             finally
             {
@@ -295,9 +304,15 @@ namespace API.Controllers.Mobile
                     var output = context.SaveChanges();
                     result = true;
                 }
+
+                string title = "mez";
+                string body = rent.FullName + " paid rent online for " + rent.MonthName + "-" + rent.Year;
+                PushNotification_C pushNotification_C = new PushNotification_C();
+                pushNotification_C.AddPushNotificationPG(rent.PGID, title, body);
             }
             catch (Exception ex)
             {
+                Exception_C.Add(System.Reflection.MethodBase.GetCurrentMethod().Name, ex.Message);
                 result = false;
             }
             finally
@@ -332,7 +347,8 @@ namespace API.Controllers.Mobile
             }
             catch (Exception ex)
             {
-                throw;
+                Exception_C.Add(System.Reflection.MethodBase.GetCurrentMethod().Name, ex.Message);
+                return StatusCode(500);
             }
             finally
             {
@@ -354,7 +370,8 @@ namespace API.Controllers.Mobile
             }
             catch (Exception ex)
             {
-                throw ex;
+                Exception_C.Add(System.Reflection.MethodBase.GetCurrentMethod().Name, ex.Message);
+                return false;
             }
             finally
             {
@@ -381,6 +398,7 @@ namespace API.Controllers.Mobile
             }
             catch (Exception ex)
             {
+                Exception_C.Add(System.Reflection.MethodBase.GetCurrentMethod().Name, ex.Message);
                 output = null;
             }
             finally

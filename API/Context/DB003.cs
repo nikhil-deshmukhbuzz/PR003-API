@@ -43,6 +43,11 @@ namespace API.Contex
         public DbSet<Email> Emails { get; set; }
         public DbSet<Monitor> Monitors { get; set; }
         public DbSet<C_Transaction> C_Transactions { get; set; }
+        public DbSet<PushNotification> PushNotifications { get; set; }
+        public DbSet<Configuration> Configurations { get; set; }
+        public DbSet<ExceptionText> ExceptionTexts { get; set; }
+        public DbSet<Configuration_SMS> Configuration_SMSs { get; set; }
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -57,7 +62,7 @@ namespace API.Contex
             }
             else
             {
-                con = "Server=NIKHIL\\SQLEXPRESS;Database=DB003;Trusted_Connection=True;";
+                con = "Server=NIKHIL\\SQLEXPRESS;Database=DB003_uat;Trusted_Connection=True;";
             }
          
             optionsBuilder.UseSqlServer(con);

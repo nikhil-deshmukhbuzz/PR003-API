@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using API.Contex;
+using API.Core;
 using API.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
@@ -91,7 +92,8 @@ namespace API.Controllers.Mobile
             }
             catch (Exception ex)
             {
-                throw ex;
+                Exception_C.Add(System.Reflection.MethodBase.GetCurrentMethod().Name, ex.Message);
+                return StatusCode(500);
             }
 
         }
@@ -170,7 +172,8 @@ namespace API.Controllers.Mobile
             }
             catch (Exception ex)
             {
-                throw ex;
+                Exception_C.Add(System.Reflection.MethodBase.GetCurrentMethod().Name, ex.Message);
+                return StatusCode(500);
             }
         }
         
@@ -188,6 +191,7 @@ namespace API.Controllers.Mobile
 
                 if (user != null)
                 {
+                    SendOTP(user.UserID);
                     bResult = true;  
                 }
                 
@@ -195,7 +199,8 @@ namespace API.Controllers.Mobile
             }
             catch (Exception ex)
             {
-                throw ex;
+                Exception_C.Add(System.Reflection.MethodBase.GetCurrentMethod().Name, ex.Message);
+                return StatusCode(500);
             }
             finally
             {
@@ -279,6 +284,44 @@ namespace API.Controllers.Mobile
             }
 
             return suscriptionResponse;
+        }
+
+        private string SendOTP(long userId)
+        {
+            Random random = new Random();
+            try
+            {
+                int otp = random.Next(1000, 9999);
+                string mobileNumber = String.Empty;
+
+                using (var context = new DB003())
+                {
+                    var input = context.Users
+                    .Where(w => w.UserID == userId)
+                    .FirstOrDefault();
+
+                    mobileNumber = input.MobileNo;
+
+                    input.OTP = otp.ToString();
+                    input.ModifiedOn = DateTime.Now;
+                    context.SaveChanges();
+                }
+
+                SMS objSMS = new SMS();
+                string message = "Your one time password for login is " + otp.ToString();
+                objSMS.SendSMS(message, mobileNumber);
+                return otp.ToString();
+            }
+            catch (Exception ex)
+            {
+                Exception_C.Add(System.Reflection.MethodBase.GetCurrentMethod().Name, ex.Message);
+                return "ERROR";
+            }
+            finally
+            {
+                random = null;
+                context = null;
+            }
         }
     }
 }
